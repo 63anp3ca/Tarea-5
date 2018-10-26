@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<style>
+ 
+ .tooltip {
+    background: #54278f;
+    box-shadow: 0 0 5px #999999;
+    color: #bdbdbd;
+    font-size: 12px;
+    left: 130px;
+    padding: 10px;
+    position: absolute;
+    text-align: center;
+    top: 95px;
+    z-index: 10;
+    display: block;
+    opacity: 0;
+  }
+  
+</style>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+    <script src="https://d3js.org/d3-time.v1.min.js"></script>
+    <script src="https://d3js.org/d3-time-format.v2.min.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="main.js"></script>
+   
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+ </head>
+ <body>
+ <div class='container'>
+    <div class="page-header">
+      <h1>VISUAL ANALYTICS
+        <small>201820</small>
+        </h1>
+    </div>
+      <div class="col-md-9">
+        <h1 ALIGN=center><b>Elecciones en Colombia.</b></h1>
+        <p>Conocer al Candidato y conocer quiénes financiaron su campaña, en qué departamento se encuentran los financiadores, el monto aportado por cada uno y el parentesco con el.</p>
+        <p>Información extraída del portal monitorciudadano en el siguiente enlace: http://elecciones-contratos.monitorciudadano.co/datos</p>
+  
+     
+         <p>A continuación, se muestran una grafica de Red donde cada candidato se relacion con sus financiadores: </p>
+
+            <img src="personas_ciudadana.jpg" align="center" alt="..">
+        <div id="tooltip" height="50"></div>
+      <!--   <svg width="900" height="50"></svg> -->
+      </div>
+      <div class="col-md-3">
+         <img src="logo-facebook.png" width="100" height="100" alt="..">
+         <img src="twitter-old.png" width="85" height="85" alt="..">
+      <h3>Guia:</h3>
+        <p> - Esta visualización nos permite ver los candidatos y sus financiadores.</p>
+        <p> - Puede serleccionar la campaña.</p>
+        <p> - Puede serleccionar al Año de la campaña.</p>
+        <p> - Puede serleccionar el Departaemnto:</p>
+
+      </div>
+  </div>
+  <h1 ALIGN=center><b> Visualización.</b></h1>
+
+ <div class="container">
+          <label>Seleccione la Campaña:</label>
+            <select id="campana">
+              <option value="Alcaldia">Alcaldia</option>
+              <option value="Asamblea">Asamblea</option>
+              <option value="Camara de Representates">Camara de Representates</option>
+              <option value="Concejo">Concejo</option>
+              <option value="Gobernacion">Gobernacion</option>
+          </select>
+      </div>
+
+      <div class="container">
+          <label>Seleccione el Año:</label>
+            <select id="anno">
+              <option value="2018">2018</option>
+              <option value="2017">2017</option>
+              <option value="2016">2016</option>
+              <option value="2015">2015</option>
+          </select>
+     </div>
+      <div class="container">
+          <label>Seleccione el Departamento:</label>
+            <select onchange="loadCircularHeatRed(value, document.getElementById('anno').value, document.getElementById('campana').value)">
+              <option value="AMAZONAS">AMAZONAS</option>
+              <option value="ANTIOQUIA">ANTIOQUIA</option>
+              <option value="ARAUCA">ARAUCA</option>
+              <option value="ARCHIPIELAGO DE SAN ANDRES PROVIDENCIA Y SANTA CATALINA">ARCHIPIELAGO DE SAN ANDRES PROVIDENCIA Y SANTA CATALINA</option>
+              <option value="ATLANTICO">ATLANTICO</option>
+              <option value="BOLIVAR">BOLIVAR</option>
+              <option value="BOYACA">BOYACA</option>
+              <option value="CALDAS">CALDAS</option>
+              <option value="CAQUETA">CAQUETA</option>
+              <option value="CASANARE">CASANARE</option>
+              <option value="CAUCA">CAUCA</option>
+              <option value="CESAR">CESAR</option>
+              <option value="CHOCO">CHOCO</option>
+              <option value="CORDOBA">CORDOBA</option>
+              <option value="CUNDINAMARCA">CUNDINAMARCA</option>
+              <option value="GUAINIA">GUAINIA</option>
+              <option value="GUAVIARE">GUAVIARE</option>
+              <option value="HUILA">HUILA</option>
+              <option value="LA GUAJIRA">LA GUAJIRA</option>
+              <option value="MAGDALENA">MAGDALENA</option>
+              <option value="META">META</option>
+              <option value="NARIÑO">NARIÑO</option>
+              <option value="NORTE DE SANTANDER">NORTE DE SANTANDER</option>
+              <option value="PUTUMAYO">PUTUMAYO</option>
+              <option value="QUINDIO">QUINDIO</option>
+              <option value="RISARALDA">RISARALDA</option>
+              <option value="SANTAFE DE BOGOTA D.C">SANTAFE DE BOGOTA D.C</option>
+              <option value="SANTANDER">SANTANDER</option>
+              <option value="SUCRE">SUCRE</option>
+              <option value="TOLIMA">TOLIMA</option>
+              <option value="VALLE DEL CAUCA">VALLE DEL CAUCA</option>
+              <option value="VAUPES">VAUPES</option>
+              <option value="VICHADA">VICHADA</option>
+           </select>
+      </div>
+
+
+    <div id="chart">
+          <svg  width=1100 height=700 id="network"></svg>
+           <script src="main.js">  </script> 
+
+    </div>
+    <script>  loadCircularHeatRed("BOLIVAR","2015","Alcaldia");  </script>
+    <footer align="center" style="font-size: 12px;">
+            Gerardo Antonio Perez Clavijo<br>
+            Código: 20151406<br>
+            Correo: ga.perez@uniandes.edu.co<br>
+            Universidad de los Andes<br>
+            Maestría en Ingeniería de la Información
+  </footer>
+  </body>
+</html>
